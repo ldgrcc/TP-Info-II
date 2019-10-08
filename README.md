@@ -1,5 +1,5 @@
 # TP-Info-II
-Repositorio para el TP dela dobladora de Informatica II
+Repositorio para el TP de la dobladora de Informatica II
 
 Se me ocurre que cada una de nuestra máquinas use la misma variable de estado,
 De la siguiente manera:
