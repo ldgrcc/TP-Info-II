@@ -1,7 +1,6 @@
 //main.c
 
 #include "def.h"
-#include "funciones.c"
 
 int main() {
 	// variable de estado
