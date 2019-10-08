@@ -8,3 +8,4 @@ Bits 3, 4 y 5 para la máquina 2,
 Los demás bits para la máquina 3.
 
 Prueba de edicion de readme hola hola hola
+Ok
