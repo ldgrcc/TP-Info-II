@@ -9,3 +9,5 @@ Los demás bits para la máquina 3.
 
 Prueba de edicion de readme hola hola hola
 Ok
+
+dede android 9
