@@ -23,8 +23,13 @@ int apilando(int e, char b);
 int configurando(int e, char b);
 
 // -- para la maquina 2
+int esperando_fin_lote(int e, char b);
+int adelantando(int e, char b);
+int moviendo_apilador(int e, char b);
 
 // -- para la maquina 3
+int mod_lote(int e, char b);
+int mod_tiempo(int e, char b);
 
 //prototipos de otras funciones
 int get_e(int e, int maq);
