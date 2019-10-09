@@ -2,6 +2,18 @@
 
 #include "def.h"
 
+/*esto es por si el compilador no compila
+todos los "*.c" del proyecto y solo compila
+el archivo actual. Si no es el caso, dejar
+comentado el siguiente #define */
+#define no_compila_varios_punto_c
+#ifdef no_compila_varios_punto_c
+  #include "maq1.c"
+  #include "maq2.c"
+  #include "maq3.c"
+  #include "general.c"
+#endif
+
 int main() {
 	// variable de estado
 	int estado;
