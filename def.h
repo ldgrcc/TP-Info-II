@@ -14,12 +14,17 @@ como si fueran constantes en un #define*/
 // general
 enum estado_t {rep, ini, dob, api, con};
 
-//prototipos de las funciones de estado
+//prototipos de las funciones de estado 
+// -- para la maquina 1
 int reposo(int e, char b);
 int iniciado(int e, char b);
 int doblando(int e, char b);
 int apilando(int e, char b);
 int configurando(int e, char b);
+
+// -- para la maquina 2
+
+// -- para la maquina 3
 
 //prototipos de otras funciones
 int get_e(int e, int maq);
