@@ -12,7 +12,9 @@ ningun boton. */
 /* usar una enumeracion para cada maquina
 como si fueran constantes en un #define*/
 // general
-enum estado_t {rep, ini, dob, api, con};
+enum estado_1 {rep, ini, dob, api, con};
+enum estado_2 {esp, ade, mov};
+enum estado_3 {lote0, t0, lote1=2, lote2=4, lote3=6, lote4=8, t1=2, t2=4};
 
 //prototipos de las funciones de estado 
 // -- para la maquina 1
