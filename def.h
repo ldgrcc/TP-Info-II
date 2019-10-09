@@ -13,11 +13,14 @@ ningun boton. */
 como si fueran constantes en un #define*/
 // general
 enum estado_t {rep, ini, dob, api, con};
-// para la parte de control
 
-
+//prototipos de las funciones de estado
 int reposo(int e, char b);
 int iniciado(int e, char b);
 int doblando(int e, char b);
 int apilando(int e, char b);
 int configurando(int e, char b);
+
+//prototipos de otras funciones
+int get_e(int e, int maq);
+void set_e(int *e, int dato, int maq);
