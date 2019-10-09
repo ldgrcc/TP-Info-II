@@ -54,10 +54,15 @@ cuelgue el programa y podamos hacer pruebas
 		}
 		
 		// Imprimir la simulacion
+/* en cada iteracion borrar la pantalla y volver a imprimir.
+lo importante es el display de 16x2, lo demas
+es para depuracion */
 		system("clear");
+		// seccion 1: display 16x2
 		printf("+------------------+\n");
 		printf("| %-16s |\n| %-16s |\n", lin1, lin2);
 		printf("+------------------+\n\n");
+		// seccion 2: botones
 		printf("=====================\n");
 		printf("p: produccion\n"
 		       "m: motor\n"
@@ -68,6 +73,7 @@ cuelgue el programa y podamos hacer pruebas
 		       "a: izquierda\n"
 		       "s: abajo\n"
 		       "d: derecha\n");
+		// seccion 3: estado de la maquina
 		printf("\n===============\n");
 		boton = getchar();
 	} // fin del while(1)
