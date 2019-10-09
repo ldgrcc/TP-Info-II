@@ -1,11 +1,11 @@
-// global.c
+// general.c
 
 // este archivo es para poner funciones 
 // que usemos todos
 
-//#define main_global_c
+//#define main_general_c
 
-#ifdef main_global_c
+#ifdef main_general_c
 /* todo este bloque de codigo se compila
 si se define "main_global_c", es para hacer
 pruebas   */
