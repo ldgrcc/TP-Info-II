@@ -36,3 +36,5 @@ int mod_tiempo(int e, char b);
 //prototipos de otras funciones
 int get_e(int e, int maq);
 void set_e(int *e, int dato, int maq);
+
+// abajo
