@@ -1,20 +1,9 @@
 // general.c
 
-// este archivo es para poner funciones 
-// que usemos todos
+/* este archivo es para poner funciones 
+/* que usemos todos
+*/
 
-//#define main_general_c
-
-#ifdef main_general_c
-/* todo este bloque de codigo se compila
-si se define "main_global_c", es para hacer
-pruebas   */
-main() {
-	int e;
-	set_e(&e, 19, 2);
-	printf("%d", get_estado(e, 2));
-	};
-#endif
 
 /* esta funcion devuelve el estado de la
 maquina pedida.
@@ -22,7 +11,7 @@ parametros:
   e = la variable de estado
   maq = el numero de la maquina de estados
 */
-int get_estado(int e, int maq) {
+int get_e(int e, int maq) {
 	switch (maq) {
 		case 1:
 		  return e & 0x7;
@@ -44,22 +33,36 @@ parametros:
   dato = estado que se quiere guardar
   maq = numero de la maqina de estados
 */
-void set_e(int *e, int dato, int maq) {
+int set_e(int e, int dato, int maq) {
 	int aux;
 	switch (maq) {
 		case 1:
 		  aux = dato;
-		  *e = *e & ~(0x7);
+		  e = e & ~(0x7);
 		  break;
 		case 2:
 		  aux = dato << 3;
-		  *e = *e & ~(0x38);
+		  e = e & ~(0x38);
 		  break;
 		case 3:
 		  aux = dato << 6;
-		  *e = *e & ~(0x1c0);
+		  e = e & ~(0x1c0);
 		  break;
 	}
-	*e = *e | aux;
-	return;
+	e = e | aux;
+	return e;
+}
+
+// Funciones de temporizacion
+int start_timer(int dseg) {
+	return dseg;
+}
+
+int stop_timer() {
+	return 0;
+}
+
+int check_timer(int timer) {
+	if (timer) return 0;
+	return 1;
 }
