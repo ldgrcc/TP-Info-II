@@ -10,7 +10,7 @@ El algoritmo es siempre el mismo:
       de estado, a veces pueden cambiar de estado las tres a veces solo una, o quizas ninguna.
 */
 
-int doblando(int e, int *bus) {
+estado_t doblando(ARGS_E) {
 	// En este estado la maquina esta en plena produccion
 	
 	// Verificar sensor contador, y si esta en 1, lo que significa que detecta un papel, aumentar el contador
