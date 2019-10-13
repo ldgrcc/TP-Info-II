@@ -3,6 +3,7 @@
 #define DEF_H
 
 #include <stdio.h>
+#include <conio.h>
 #include <string.h>
 #include <stdlib.h> 
 #include <time.h>
@@ -12,6 +13,14 @@ cada uno recibe el estado y el boton
 presionado. Se me ocurre que bus[0]=0 
 podria significar que el usuario no presiono
 ningun boton. */
+
+typedef unsigned char estado_t;
+#define CANT_MAQ 3
+#define BUS_ELEMENTOS 31
+#define ARGS_E estado_t e, int bus[BUS_ELEMENTOS]
+#define DEFINIR_CRONOMETRO(x) clock_t aux_clk_##x
+#define CRONOMETRO(x) ((float) (clock() - aux_clk_##x) / CLOCKS_PER_SEC)
+#define REINICIAR_CRONOMETRO(x) aux_clk_##x = clock()
 
 /* Usar una enumeracion para cada maquina
 como si fueran constantes en un #define*/
@@ -35,24 +44,27 @@ enum bus_msg {bus_user, // lectura de teclado
                               
 /* Descripcion de los subindices
  - Actuadores
-      bus_mp | es el motor que mueve toda la maquina
-	    bus_mc | es el motor que mueve la cinta transportadora de la salida
-	    bus_ma | es el motor (bidireccional) que mueve el apilador
-	    bus_va  | es la valvula que hace salir los papeles
+      bus_mp |  Es el motor que mueve toda la maquina
+	    bus_mc |  Es el motor que mueve la cinta transportadora de la salida
+	    bus_ma |  Es el motor (bidireccional) que mueve el apilador
+	     bus_va  |  Es la valvula que hace salir los papeles
 	    
  - Sensores
-	    bus_sc    | cuenta los papeles a medida que van pasando,
-	                       si esta en 1: hay un papel bajo el sensor,
-	                       si esta en 0: no hay papel bajo el sensor
-	    bus_pre_sc  | auxiliar para guardar el estado previo del sensor contador
-	    bus_sf1  | sensor de fin de carrera del apilador
-	    bus_sf2  | sensor de fin de carrera del apilador
+	            bus_sc  |  Cuenta los papeles a medida que van pasando,
+	                              si esta en 1: hay un papel bajo el sensor,
+	                              si esta en 0: no hay papel bajo el sensor.
+	    bus_pre_sc  |  Auxiliar para guardar el estado previo del sensor contador.
+	          bus_sf1  |  Sensor de fin de carrera del apilador.
+	          bus_sf2  |  Sensor de fin de carrera del apilador.
 	    
  - Otros
-      bus_user | el boton que presiono el usuario
-      bus_con  | la cantidad de papeles que se llevan contados
-      bus_lote  | la cantidad de papeles que el usuario desea que tenga cada pila
-      
+            bus_user  |  El boton que presiono el usuario
+             bus_con  |  La cantidad de papeles que se llevan contados
+             bus_lote  |  La cantidad de papeles que el usuario desea que tenga cada pila
+      bus_timer(x)  |  Temporizadores. El sistema decrementa los temporizadores hasta llegar
+                                  a cero. Usar temporizadores en vez de la funcion delay() evita que el
+                                  programa se cuelgue.
+                                
 En cada funcion de estado cada unovba a tener que controlar
 partes de la maquina, eso se va a hacer asignando valores a
 los elementos del vector 'bus'. Por ejemplo:
@@ -69,32 +81,21 @@ sino el compilador deberia tirar un error.
 #define DEFINIDA_SI ;
 
 // Para la maquina 1
-int reposo_1(int e, int *bus) DEFINIDA_NO // Estado inicial y de reposo
-int iniciado(int e, int *bus) DEFINIDA_NO
-int doblando(int e, int *bus) DEFINIDA_SI
-int apilando(int e, int *bus) DEFINIDA_NO
-int configurando(int e, int* bus) DEFINIDA_NO
+estado_t reposo_1(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
+estado_t iniciado(ARGS_E) DEFINIDA_NO
+estado_t doblando(ARGS_E) DEFINIDA_SI
+estado_t apilando(ARGS_E) DEFINIDA_NO
+estado_t configurando(ARGS_E) DEFINIDA_NO
 
-<<<<<<< HEAD
 // Para la maquina 2
-int reposo_2(int e, int *bus) DEFINIDA_NO // Estado inicial y de reposo
-int esperando_fin_lote(int e, int *bus) DEFINIDA_NO
-int cinta_acelerada(int e, int *bus) DEFINIDA_NO
-int moviendo_apilador(int e, int *bus) DEFINIDA_NO
+estado_t reposo_2(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
+estado_t esperando_fin_lote(ARGS_E) DEFINIDA_NO
+estado_t cinta_acelerada(ARGS_E) DEFINIDA_NO
+estado_t moviendo_apilador(ARGS_E) DEFINIDA_NO
 
 // Para la maquina 3
-int reposo_3(int e, int *bus) DEFINIDA_NO // Estado inicial y de reposo
-int mod_lote(int e, int *bus) DEFINIDA_NO
-int mod_tiempo(int e, int *bus) DEFINIDA_NO
-
-// Prototipos de otras funciones
-int get_e(int e, int maq) DEFINIDA_SI
-int set_e(int e, int dato, int maq) DEFINIDA_SI
-int start_timer(int milis) DEFINIDA_SI
-int stop_timer() DEFINIDA_SI
-int check_timer(int tmr) DEFINIDA_SI
-
-#define _start_timer(x) x
-#define _stop_timer() 0
+estado_t reposo_3(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
+estado_t mod_lote(ARGS_E) DEFINIDA_NO
+estado_t mod_tiempo(ARGS_E) DEFINIDA_NO
 
 #endif
