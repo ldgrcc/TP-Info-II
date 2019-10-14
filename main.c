@@ -25,11 +25,16 @@ int main()
   char desc[][20] = {"motor principal", "motor cinta", "motor apilador",
 		     "valvula de aire", "contador", "loteo",
 		     "timer 1", "timer 2", "timer 3" };
+  // Estas variable ayuda a controlar el flujo de la simulacion
+  char pausado = 0;
+  clock_t aux_pausa;
+  
   // Para manejar los tiempos
   DEFINIR_CRONOMETRO(imp); // Este cronometro controla la impresion de la simulacion
   DEFINIR_CRONOMETRO(maq); // Este cronometro decrementa los temporizadores de la maquina (timer(x))
   DEFINIR_CRONOMETRO(sim); // Estevtemporizador lleva la cuenta del tiempo transcurrido desde el inicio de la simulacion
-  // Iniciar los cronometros
+  DEFINIR_CRONOMETRO(pausa);
+    // Iniciar los cronometros
   REINICIAR_CRONOMETRO(imp);
   REINICIAR_CRONOMETRO(maq);
   REINICIAR_CRONOMETRO(sim);
@@ -40,9 +45,11 @@ int main()
   strcpy(lin1, "Bienvenido");
   lin2[0] = '\0';
   
-/* Aca deberia ser while (1) pero le pongo
-   una condicion de salida para que no se 
-   cuelgue el programa y podamos hacer pruebas
+/* Aca deberia ser while (1) pero le pongo una condicion de salida para que no se 
+    cuelgue el programa y podamos hacer depuracion.
+       x: Finaliza la simulacion.
+       y: Pausa la simulacion y entra en modo paso a paso.
+       z: Reanuda la simulacion.
 */
   while (bus[bus_user] != 'x')
   {
@@ -109,7 +116,7 @@ int main()
          es para depuracion.
     */
 
-    if (CRONOMETRO(imp) > 0.25) // para no saturar el terminal, imprimir cada cierto tiempo de espera
+    if (CRONOMETRO(imp) > 0.25 || pausado) // para no saturar el terminal, imprimir cada cierto tiempo de espera
     {
       REINICIAR_CRONOMETRO(imp);
       system("clear");
@@ -128,15 +135,19 @@ int main()
              "d: derecha\n");
 
       // seccion 3: estado de la maquina
-      printf("\n=== Estado de la maquina ========================\n|");
-      for (int i=0; i < CANT_MAQ; i++) printf("  estado %d: %d  |", i+1, estado[i]);
+      printf("\n=== Estado de la maquina ========================\n-");
+      for (int i=0; i < CANT_MAQ; i++) printf("  estado %d: %d  -", i+1, estado[i]);
       for (int i=1; i<=bus_timer3; i+=2)
       {
         printf("\n%18s: %-3d", desc[i-1], bus[i]);
         if (i+1<=bus_timer3) printf("  | %18s: %-3d", desc[i], bus[i+1]);
       }
-
-      printf("\n\nTiempo de simulacion: %.2f s   ", CRONOMETRO(sim));
+      printf("\n\n");
+      if (pausado) printf("Simulacion pausada");
+      else printf("Tiempo de simulacion");
+      printf(": %.2f s   >> user: ", (pausado)? CRONOMETRO(sim) - CRONOMETRO(pausa): CRONOMETRO(sim));
+      if (bus[bus_user]) putchar(bus[bus_user]);
+      else putchar('-');
       /* La impresion era defectuosa, habiacun conflicto entre system("clear")
          y los printf(), asi que agregue la siguiente linea para asegurar que la
          impresion sea correcta.
@@ -158,7 +169,28 @@ int main()
     }
 
     // Leer el teclado  
-    if (kbhit()) scanf("%c", &bus[bus_user]);
+    if (kbhit()) bus[bus_user] = getchar();
+    else bus[bus_user] = 0;
+    
+    // Evaluar el modo de simulacion: ( pausado | normal )
+    if (pausado)
+  	{
+  		while (!kbhit()); 
+  	  bus[bus_user] = getchar();
+  	  if (bus[bus_user] == 'z') // salir del modo paso a paso
+  	  {
+  	  	pausado = 0;
+  	  	bus[bus_user] = 0;
+  	  	aux_clk_sim += clock() - aux_clk_pausa;
+  	  }
+  	}
+  	if (!pausado && bus[bus_user]=='y')
+  	{
+  		pausado = 1;
+  		//aux_clk_pausa = clock();
+  		REINICIAR_CRONOMETRO(pausa);
+  	}
   } // fin del while(1)
+  printf("\n\nFin de la simulacion.");
   return 0;
 }  // Fin del main()
