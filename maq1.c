@@ -1,43 +1,107 @@
 // maq1.c
 
-/*
-Ejemplo de lo que haria una funcion de estado
-
-El algoritmo es siempre el mismo:
- 1: Verificar y comparar los valores de los sensores, contadores y demas variables internas.
- 2: Realizar las acciones necesarias (prender o apagar motores, cambiar el valor de alguna bariable, etc).
- 3: Determinar el siguiente estado, en nuestro caso hay que tener en cuenta que son 3 maquinas
-      de estado, a veces pueden cambiar de estado las tres a veces solo una, o quizas ninguna.
-*/
-
-estado_t doblando(ARGS_E) {
-	// En este estado la maquina esta en plena produccion
-	
-	// Verificar sensor contador, y si esta en 1, lo que significa que detecta un papel, aumentar el contador
-	if (bus[bus_sc] && !bus[bus_pre_sc]) bus[bus_con]++;
-	
-	/* Ahora el sistema debe verificar si ya se alcanzo la cantidad pedida,
-	  si es asi: hay que detener la produccion,
-	  sino: no pasa nada, hay que seguir doblando */
-	  if (bus[bus_con] == bus[bus_lote]) {
-	  	// Realizar las acciones necesarias y pasar al siguiente estado
-	  	bus[bus_va] = 0; // Desactivar la valvula para que deje de salir papel
-	  	bus[bus_con] = 0; // Reiniciar el contador
-	  	start_timer(2000); // Esperar un tiempo para que los papeles que quedaron en la maquina terminen de salir
-	  	bus[bus_mc] = 100; // Acelerar la cinta transportadora de salida
-	  	e = set_e(e, ini, 1); // Indicar siguiente estado de la maquina_1: "iniciado"
-	  	e = set_e(e, cin, 2); // Indicar el siguiente estado de la maquina_2: "cinta_acelerada"
-	  	// La maquina_3 no cambia de estado
-	  }
-	// Siempre se devuelve un valor de estado
-	return e;
+// estado = rep1
+estado_t reposo_1(ARGS_E) 
+{
+ 	estado_t respuesta = e[0];
+ 	switch (bus[bus_user]) 
+ 	{
+ 	  case 'e': // Boton: Parada de emergencia.
+      bus[bus_mp] = 0;
+      bus[bus_mc] = 0;
+      bus[bus_va] = 0;
+      break;
+    case 'm': // Boton: Motor principal.
+      bus[bus_mp] = 1;
+      bus[bus_mc] = 10;
+      respuesta = ini;
+      break;
+ 	}
+ 	return respuesta;
 }
 
-/*
-Y bue... cada funcion no deberia ser mucho mas complicada que esto.
-Recordar que el vector "bus" representa la maquina fisica, cadacelemento
-del vector esta relacionado con algun sensor, algun motor, o alguna variable,
-como por ejemplocun contador.
-Y la variable "e" o "estado" solo se encarga de determinar la siguiente
-funcion que va a ser invocada.
-*/
+// estado = ini
+estado_t iniciado(ARGS_E)
+{
+ 	estado_t respuesta = e[0];
+ 	switch (bus[bus_user])
+ 	{
+    case 'e': // Boton: Parada de emergencia.
+    case 'm': // Boton: Motor principal.
+      bus[bus_mp] = 0;
+      bus[bus_mc] = 0;
+      bus[bus_va] = 0;
+      respuesta = rep1;
+      break;
+    case 'p': // Boton: Produccion.
+      if (bus[bus_mp])
+      {
+        bus[bus_va] = 1;
+        respuesta = dob;
+      }
+      break;
+	 }
+	return respuesta;
+}
+
+// estado = dob
+estado_t doblando(ARGS_E)
+{
+  estado_t respuesta = e[0];
+  switch (bus[bus_user])
+ 	{
+    case 'e': // Boton: Parada de emergencia.
+    case 'm': // Boton: Motor principal.
+      bus[bus_mp] = 0;
+      bus[bus_mc] = 0;
+      bus[bus_va] = 0;
+      respuesta = rep1;
+      break;
+    case 'p': // Boton: Produccion.
+      bus[bus_va] = 0;
+      respuesta = ini;
+      break;
+	 }
+	 if (bus[bus_sc] && !bus[bus_pre_sc])
+	 {
+	   bus[bus_con]++;
+	 }
+	 bus[bus_pre_sc] = bus[bus_sc];
+	 if (bus[bus_con] >= bus[bus_lote]) 
+	 {
+	   bus[bus_va] = 0;
+	   respuesta = api;
+	   bus[bus_timer2] = 25;
+	 }
+  return respuesta;
+}
+
+// estado = api
+estado_t apilando(ARGS_E)
+{
+  estado_t respuesta = e[0];
+  switch (bus[bus_user])
+ 	{
+    case 'e': // Boton: Parada de emergencia.
+      bus[bus_mp] = 0;
+      bus[bus_mc] = 0;
+      bus[bus_va] = 0;
+      break;
+	 }
+  return respuesta;
+}
+
+// estado = con
+estado_t configurando(ARGS_E)
+{
+  estado_t respuesta = e[0];
+  switch (bus[bus_user])
+ 	{
+    case 'e': // Boton: Parada de emergencia.
+      bus[bus_mp] = 0;
+      bus[bus_mc] = 0;
+      bus[bus_va] = 0;
+      break;
+	 }
+  return respuesta;
+}
