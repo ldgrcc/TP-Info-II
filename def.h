@@ -2,11 +2,37 @@
 #ifndef DEF_H
 #define DEF_H
 
+// Para compatibilidad entre sistemas operativos diferentes
+#define SIS_OP_NO_INFO
+#include "local.h"
+
+/* Si su sistema operativo no se encuentra entre los siguientes,
+agregarlo en un #elif defined(x) (x: es su sistema operativo),
+y definir las constantes necesarias. */
+#if defined(SIS_OP_NO_INFO)
+     // Nada O_O
+#elif defined(SIS_OP_ANDROID)
+    #define BORRAR_PANTALLA "clear"
+    #define T_IMP 0.25
+#elif defined(SIS_OP_WIN_7)
+
+#endif
+
+// Asegurarse que las constantes necesarias esten definidas
+#ifndef BORRAR_PANTALLA
+    #error definir: < BORRAR_PANTALLA >
+#endif
+#ifndef T_IMP
+    #error definir: T_IMP
+#endif
+
+// Llibrerias necesarias
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
 #include <stdlib.h> 
 #include <time.h>
+#include <math.h>
 
 /* estos serian los estados de la maquina
 cada uno recibe el estado y el boton
@@ -17,7 +43,7 @@ ningun boton. */
 typedef unsigned char estado_t;
 #define CANT_MAQ 3
 #define BUS_ELEMENTOS 31
-#define ARGS_E estado_t e, int bus[BUS_ELEMENTOS]
+#define ARGS_E estado_t *e, int bus[BUS_ELEMENTOS]
 #define DEFINIR_CRONOMETRO(x) clock_t aux_clk_##x
 #define CRONOMETRO(x) ((float) (clock() - aux_clk_##x) / CLOCKS_PER_SEC)
 #define REINICIAR_CRONOMETRO(x) aux_clk_##x = clock()
@@ -37,7 +63,7 @@ enum bus_msg {bus_user, // lectura de teclado
                               bus_con, // contador de papeles
                               bus_lote, // cantidad deseada por el usuario
                               bus_timer1, bus_timer2, bus_timer3, // temporizadores
-                              bus_sc, bus_pre_sc, bus_sf1, bus_sf2, // sensores
+                              bus_sc, bus_sf1, bus_sf2, bus_pre_sc, // sensores
                               bus_d1, bus_d2, bus_d3, bus_d4, // digitos del menu 'loteo"
                               bus_t1, bus_t2, // digitos del menu 'tiempo de espera'
                               };
@@ -77,25 +103,27 @@ Las funciones que estan marcadas como DEFINIDA_NO faltan hacerlas,
 una vez que alguien ya definio una funcion hay que marcarla como DEFINIDA_SI,
 sino el compilador deberia tirar un error.
 */
-#define DEFINIDA_NO { return 0; }
+#define DEFINIDA_NO { return e; }
 #define DEFINIDA_SI ;
 
 // Para la maquina 1
-estado_t reposo_1(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
-estado_t iniciado(ARGS_E) DEFINIDA_NO
-estado_t doblando(ARGS_E) DEFINIDA_SI
-estado_t apilando(ARGS_E) DEFINIDA_NO
-estado_t configurando(ARGS_E) DEFINIDA_NO
+estado_t reposo_1(ARGS_E) DEFINIDA_SI // rep1 // Estado inicial y de reposo
+estado_t iniciado(ARGS_E) DEFINIDA_SI // ini
+estado_t doblando(ARGS_E) DEFINIDA_SI // dob
+estado_t apilando(ARGS_E) DEFINIDA_SI // api
+estado_t configurando(ARGS_E) DEFINIDA_SI // con
 
 // Para la maquina 2
-estado_t reposo_2(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
-estado_t esperando_fin_lote(ARGS_E) DEFINIDA_NO
-estado_t cinta_acelerada(ARGS_E) DEFINIDA_NO
-estado_t moviendo_apilador(ARGS_E) DEFINIDA_NO
+estado_t reposo_2(ARGS_E) DEFINIDA_NO // rep2 //  Estado inicial y de reposo
+estado_t esperando_fin_lote(ARGS_E) DEFINIDA_NO // esp
+estado_t cinta_acelerada(ARGS_E) DEFINIDA_NO // cin
+estado_t moviendo_apilador(ARGS_E) DEFINIDA_NO // mov_i | mov_d
 
 // Para la maquina 3
-estado_t reposo_3(ARGS_E) DEFINIDA_NO // Estado inicial y de reposo
-estado_t mod_lote(ARGS_E) DEFINIDA_NO
-estado_t mod_tiempo(ARGS_E) DEFINIDA_NO
+estado_t reposo_3(ARGS_E) DEFINIDA_NO // rep3 // Estado inicial y de reposo
+estado_t mod_lote(ARGS_E) DEFINIDA_NO // lote0
+estado_t mod_tiempo(ARGS_E) DEFINIDA_NO // t0
 
+// Funciones de uso general
+print16x2(int linea, char *flags, char *str) DEFINIDA_NO
 #endif
