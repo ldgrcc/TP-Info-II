@@ -1,6 +1,33 @@
 # TP-Info-II
 Repositorio para el TP de la dobladora de Informatica II
 
+================================================================================
+Cada uno debe tener un archivo llamado "local.h" con el siguiente contenido:
+
+/*   local.h   */
+
+#ifndef LOCAL_H
+#define LOCAL_H
+
+#ifdef SIS_OP_NO_INFO
+  #undef SIS_OP_NO_INFO
+#endif
+
+// Sistema operativo
+#define SIS_OP_ANDROID
+
+// Compilador
+#define no_compila_varios_punto_c
+
+#endif
+
+donde dice SIS_OP_ANDROID hay que poner el s.o. de cada una, por ejemplo
+SIS_OP_WIN_7 para windows 7.
+Este archivo no se sube ni clona del repositorio. "def.h" lo mete en un include,
+por lo que si no existe deberia dar un error.
+
+====================================================================================
+{
 Se me ocurre que cada una de nuestra máquinas use la misma variable de estado,
 De la siguiente manera:
 Los 3 primeros bit para la máquina 1.
@@ -8,6 +35,7 @@ Bits 3, 4 y 5 para la máquina 2,
 Los demás bits para la máquina 3.
 Para poder obtener el estado de cada maquina
 usamos una mascara, metida en una funcion.
+} Hubo cambios en esto, lo conservo como referencia.
 
 /*
 Ejemplo de lo que haria una funcion de estado
