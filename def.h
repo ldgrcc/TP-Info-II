@@ -103,7 +103,7 @@ Las funciones que estan marcadas como DEFINIDA_NO faltan hacerlas,
 una vez que alguien ya definio una funcion hay que marcarla como DEFINIDA_SI,
 sino el compilador deberia tirar un error.
 */
-#define DEFINIDA_NO { return e; }
+#define DEFINIDA_NO { return 0; }
 #define DEFINIDA_SI ;
 
 // Para la maquina 1
@@ -125,5 +125,5 @@ estado_t mod_lote(ARGS_E) DEFINIDA_NO // lote0
 estado_t mod_tiempo(ARGS_E) DEFINIDA_NO // t0
 
 // Funciones de uso general
-print16x2(int linea, char *flags, char *str) DEFINIDA_NO
+void print16x2(int linea, char *flags, char *str) DEFINIDA_NO
 #endif
