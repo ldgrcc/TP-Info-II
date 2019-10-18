@@ -47,9 +47,9 @@ int main()
   
 /* Aca deberia ser while (1) pero le pongo una condicion de salida para que no se 
     cuelgue el programa y podamos hacer depuracion.
-       x: Finaliza la simulacion.
-       y: Pausa la simulacion y entra en modo paso a paso.
-       z: Reanuda la simulacion.
+       z: Finaliza la simulacion.
+       x: Pausa la simulacion y entra en modo paso a paso.
+       c: Reanuda la simulacion.
 */
   while (bus[bus_user] != 'z')
   {
