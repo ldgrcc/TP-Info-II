@@ -1,0 +1,26 @@
+Escribir en este archivo los problemas que vayan apareciendo.
+Usar el siguiente formato:
+
+  #<numero>
+  T: <Titulo>
+  P: <Descripcion del problema>
+  D: <Diagnostico preliminar>
+  L: <Links o nombres de archivos anexos>
+  
+Para problemas solucionados o intentos de solucion agregar informacion:
+
+  #numero [Solucionado]
+  Titulo
+  Descripcion del problema
+  Links o nombres de archivos anexos
+  sol#<numero>
+  <Descripciin del intento de solucion>
+  
+--------------------------------------------------------------------------
+
+#1
+T: Error de compilacion en Windows 7
+P: Gabi no pudo compilar en DevC++
+D: DevC++ es muy estructurado
+L: 
+
