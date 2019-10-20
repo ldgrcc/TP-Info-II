@@ -22,5 +22,11 @@ Para problemas solucionados o intentos de solucion agregar informacion:
 T: Error de compilacion en Windows 7
 P: Gabi no pudo compilar en DevC++
 D: DevC++ es muy estructurado
-L: 
-
+L: SDETALLES DE CAPTURAS
+   TODO JUNTO.jpg
+   compilaciondefh.jpg
+   compilaciongeneralc.jpg
+   compilacionmainc.jpg
+   compilacionmaq1.jpg
+   compilacionmaq2.jpg
+sol#1
