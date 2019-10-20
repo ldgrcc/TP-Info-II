@@ -15,7 +15,8 @@ y definir las constantes necesarias. */
    #define BORRAR_PANTALLA "clear"
    #define T_IMP 0.04
 #elif defined(SIS_OP_WIN_7)
-
+   #define BORRAR_PANTALLA "cls"
+   #define T_IMP 0.03
 #endif
 
 // Asegurarse que las constantes necesarias esten definidas
