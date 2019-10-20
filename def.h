@@ -140,5 +140,6 @@ estado_t mod_tiempo(ARGS_E) DEFINIDA_NO // t0
 // Funciones de uso general
 void print16x2(int linea, char *flags, char *str);
 void emergencia(int *bus);
+void print_info(char* info);
 
 #endif

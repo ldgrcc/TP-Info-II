@@ -47,6 +47,21 @@ void emergencia(int *bus) {
 }
 
 /*==========================================================================*/
+/* Parada de emergencia
+  Evaluar si conviene que cada funcion de estado llame a esta funcion, o si
+  la ponemos en el main antes de los switch...case.
+>> Leandro >> Yo me tiro por la segunda opcion. <<
+*/
+void print_info(char *info) {
+  int i;
+  gotoxy(0, 21);
+  for (i=1; i<=50; i++) printf(" ");
+  gotoxy(0, 21);
+  printf(info);
+  return;
+}
+
+/*==========================================================================*/
 /* Para manejar los mensajes entre maquinas */
 
 /* Busca en la lista si hay algun mensaje para la maq. de est.
