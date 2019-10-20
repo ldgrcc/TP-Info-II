@@ -13,15 +13,15 @@ Para problemas solucionados o intentos de solucion agregar informacion:
   Titulo
   Descripcion del problema
   Links o nombres de archivos anexos
-  sol#<numero>
-  <Descripciin del intento de solucion>
+  sol #<numero>
+  <Descripcion del intento de solucion>
   
 --------------------------------------------------------------------------
 
-#1
-T: Error de compilacion en Windows 7
+#1 - Error de compilacion en Windows 7
+A: Leandro
 P: Gabi no pudo compilar en DevC++
-D: DevC++ es muy estructurado
+D: DevC++ es muy estricto con la sintaxis
 L: SDETALLES DE CAPTURAS
    TODO JUNTO.jpg
    compilaciondefh.jpg
@@ -29,4 +29,7 @@ L: SDETALLES DE CAPTURAS
    compilacionmainc.jpg
    compilacionmaq1.jpg
    compilacionmaq2.jpg
-sol#1
+sol #1 - Leandro
+  Agregué un #include "def.h" en cada archivo.
+  Por error habia definido void emergencia(char*) cuando debia ser void emergencia(int*).
+  Subí los archivos corregidos.
