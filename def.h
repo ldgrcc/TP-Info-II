@@ -13,7 +13,7 @@ y definir las constantes necesarias. */
    // Sin definiciones, solo para cumplir con la consigna anterior
 #elif defined(SIS_OP_ANDROID)
    #define BORRAR_PANTALLA "clear"
-   #define T_IMP 0.25
+   #define T_IMP 0.04
 #elif defined(SIS_OP_WIN_7)
 
 #endif
@@ -139,6 +139,6 @@ estado_t mod_tiempo(ARGS_E) DEFINIDA_NO // t0
 
 // Funciones de uso general
 void print16x2(int linea, char *flags, char *str);
-void emergencia(char *bus);
+void emergencia(int *bus);
 
 #endif

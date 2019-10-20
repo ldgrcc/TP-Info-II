@@ -4,7 +4,7 @@
    de estado que se usen en el main() pero no se correspondan con
    funciones de estado.
 */
-
+#include "def.h"
 /*==========================================================================*/
 /* Funciones de temporizacion
   Habria que evaluar que conviene mas entre usar las funciones o usar las
@@ -35,7 +35,7 @@ int check_timer(int timer) {
   la ponemos en el main antes de los switch...case.
 >> Leandro >> Yo me tiro por la segunda opcion. <<
 */
-void emergencia(char *bus) {
+void emergencia(int *bus) {
   bus[bus_mp] = 0;
   bus[bus_mc] = 0;
   bus[bus_ma] = 0;
