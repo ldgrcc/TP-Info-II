@@ -9,16 +9,21 @@ Usar el siguiente formato:
   
 Para problemas solucionados o intentos de solucion agregar informacion:
 
-  #numero [Solucionado]
-  Titulo
+  #numero - [SOL] Titulo
   Descripcion del problema
   Links o nombres de archivos anexos
   sol #<numero>
   <Descripcion del intento de solucion>
   
 --------------------------------------------------------------------------
+#1 - [SOL] Archivos desordenados
+A: Leandro
+P: Al ir avanzando el proyecto el repositorio se volvio` un desastre
+   de archivos de toda clase
+sol #1 - Leandro - [Funcionó]
+  Cree` carpetas para organizar los archivos.
 
-#1 - Error de compilacion en Windows 7
+#2 - Error de compilacion en Windows 7
 A: Leandro
 P: Gabi no pudo compilar en DevC++
 D: DevC++ es muy estricto con la sintaxis
