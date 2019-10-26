@@ -33,8 +33,8 @@ estado_t esperando_fin_lote(ARGS_E)
   }
   if (check_timer(bus[bus_timer2]))
   {
-    bus[bus_mc] = 44; // Aumentar velocidad de la cinta
-    bus[bus_timer2] = 35; // Esperar que los papeles terminen de pasar
+    bus[bus_mc] = 50; // Aumentar velocidad de la cinta
+    bus[bus_timer2] = bus[bus_t_esp]; // Esperar que los papeles terminen de pasar
     resp = cin; // Pasar al siguiente estado
     print_info("cinta acelerada");
   }
@@ -58,7 +58,6 @@ estado_t cinta_acelerada(ARGS_E)
     bus[bus_mc] = 10; // Desacelerar la cinta
     resp = ((bus[bus_sfd])? mov_i : mov_d); // Determinar el siguiente estado
     bus[bus_ma] = (bus[bus_sfi] - bus[bus_sfd]); // Poner en marcha el motor apilador en la direccion correcta
-    print_info("moviendo apilador");
   }
   return resp;
 }

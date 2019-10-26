@@ -65,7 +65,8 @@ estado_t doblando(ARGS_E)
 	 }
 	 if (bus[bus_sc] && !bus[bus_pre_sc]) // Un papel acaba fe ingresar a la maquina
 	 {
-	   bus[bus_con]++; // Aumentar contador
+	   if (bus[bus_lote]) bus[bus_con]++; // Aumentar contador
+	   bus[bus_total]++;
 	 }
 	 bus[bus_pre_sc] = bus[bus_sc]; // Para no contar dos veces el mismo papel
 	 if (bus[bus_con] >= bus[bus_lote]) // Se alcanzo la cantidad pedida
@@ -91,13 +92,19 @@ estado_t apilando(ARGS_E)
       emergencia(bus);
       break;
 	 }
-	 //if (e[1] == rep2 && check_timer(bus[bus_timer1])) // ! CONFLICTO !
 	 if (get_msg(bus, 1) == dob)
 	 {
-	   bus[bus_va] = 1; // Abrir valvula de aire
 	   bus[bus_con] = 0; // Reiniciar contador
-	   respuesta = dob; // Siguiente estado
-	   print_info("lote apilado, volver a doblar");
+	   if (bus[bus_mp] > 0)
+	   {
+	     bus[bus_va] = 1; // Abrir valvula de aire
+	     respuesta = dob; // Siguiente estado
+	   }
+	   else
+	   {
+	     respuesta = rep1; // Siguiente estado
+	     bus[bus_mc] = 0;
+	   }
 	 }
   return respuesta;
 }
