@@ -51,11 +51,13 @@ void emergencia(int *bus) {
 /* Mensajes informativos
 */
 void print_info(char *info) {
+#ifndef SIS_OP_WIN
   int i;
   gotoxy(0, 20);
   for (i=1; i<=50; i++) printf(" ");
   gotoxy(0, 20);
   printf(info);
+#endif
   return;
 }
 
@@ -77,6 +79,12 @@ int get_msg(int *bus, int para) {
     {
       msg = bus[i] >> 3;
       bus[i] = 0;
+      if (i<bus_msg_hi) 
+      {
+        for (;i<bus_msg_hi; i++) bus[i]=bus[i+1];
+        bus[bus_msg_hi]=0;
+        return msg;
+      }
     } 
   return msg;
 }

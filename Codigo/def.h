@@ -13,9 +13,10 @@ y definir las constantes necesarias. */
    // Sin definiciones, solo para cumplir con la consigna anterior
 #elif defined(SIS_OP_ANDROID)
    #define BORRAR_PANTALLA "clear"
+   #define T_IMP 0.09
+#elif defined(SIS_OP_WIN)
+   #define BORRAR_PANTALLA "cls"
    #define T_IMP 0.033
-#elif defined(SIS_OP_WIN_7)
-
 #endif
 
 // Asegurarse que las constantes necesarias esten definidas
@@ -117,7 +118,7 @@ los elementos del vector 'bus'. Por ejemplo:
 */
 
 
-// Para controlar la interfaz de usuario
+// Para controlar la interfaz de usuario (EL DISPLAY 16X2)
 #define UI_MASK_FLAGS 0xFF00
 #define UI_MASK_STATUS 0xFF
 
@@ -125,7 +126,7 @@ enum UI_flags_status
 {
   UI_menu, UI_dig1, UI_dig2, UI_dig3, UI_dig4,
   UI_lote_max_dig=4, UI_esp_max_dig=2,
-  UI_reposo_cant=0, UI_reposo_ratio, UI_reposo_total, UI_reposo_borrar=(1<<10),
+  UI_reposo_cant=0, UI_reposo_ratio, UI_reposo_total, UI_reposo_borrar=128,
 };
 
 // Para imprimir en el display 16x2
@@ -158,7 +159,6 @@ estado_t reposo_1(ARGS_E) DEFINIDA_SI // rep1 // Estado inicial y de reposo
 estado_t iniciado(ARGS_E) DEFINIDA_SI // ini
 estado_t doblando(ARGS_E) DEFINIDA_SI // dob
 estado_t apilando(ARGS_E) DEFINIDA_SI // api
-estado_t configurando(ARGS_E) DEFINIDA_NO // con
 
 // Para la maquina 2
 estado_t reposo_2(ARGS_E) DEFINIDA_SI // rep2 //  Estado inicial y de reposo

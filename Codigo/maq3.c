@@ -6,14 +6,13 @@
 // estado = rep3
 estado_t reposo_3(ARGS_E)
 {
-  estado_t retval = rep3;
   char auxstr[17];
   int aux_e = bus[bus_UI];
   
   /* Atender teclas pulsadas */
-  if ((bus[bus_UI] & UI_reposo_borrar) && bus[bus_user]!='o')
+  if ((bus[bus_UI] & UI_reposo_borrar) && (bus[bus_user]!='o') && (bus[bus_user]))
   {
-    bus[bus_UI] &= -1>>1;
+    bus[bus_UI] &= ~UI_reposo_borrar;
     return rep3;
   }
   switch (bus[bus_user])
@@ -27,12 +26,9 @@ estado_t reposo_3(ARGS_E)
     case 'f':
       bus[bus_UI] = UI_menu;
       print16x2(bus, D16x2_LIN_CMD|D16x2_BRR_ALL, 0);
-      //print16x2(bus, D16x2_LIN_1|D16x2_ALIN_IZQ, "Loteo");
-      //sprintf(auxstr, "%d", bus[bus_lote]);
       print16x2(bus, D16x2_LIN_1|D16x2_ALIN_IZQ, "Velocidad Motor");
       sprintf(auxstr, "%d", bus[bus_vel]);
       print16x2(bus, D16x2_LIN_2|D16x2_ALIN_DER, auxstr);
-      //return loteo;
       return vel;
       break;
     case 'a':
@@ -71,6 +67,7 @@ estado_t reposo_3(ARGS_E)
   /* Imprimir cambios de estado */
   if (bus[bus_UI] != aux_e)
   {
+    if (bus[bus_UI] != UI_reposo_ratio) bus[bus_timer3] = 0;
     switch (bus[bus_UI])
     {
       case UI_reposo_cant:
@@ -97,47 +94,58 @@ estado_t reposo_3(ARGS_E)
       print16x2(bus, D16x2_LIN_2|D16x2_ALIN_DER, auxstr);
       break;
     case UI_reposo_ratio:
-      if (!bus[bus_timer3]) bus[bus_timer3] = 9999;
+      //if (!bus[bus_timer3]) bus[bus_timer3] = 9999;
       if (bus[bus_mp])
       {
         int dif = bus[bus_total] - bus[bus_aux_ratio];
-        
-        if ((dif > 0) && (bus[bus_timer3] < 9999))
+        if ((dif > 0))
         {
-          int plh, v, t;
+          float plh, v, t;
+          
           float n;
-          t = 9999 - bus[bus_timer3];
-          //if (bus[bus_aux_v]/t > 0.5) t = bus[bus_aux_v];
-          //printf("<<  t1=%d  >>\n", t);
-          if (!bus[bus_aux_v]) bus[bus_aux_v] = t;
-          t /= dif;
-          t = (t + bus[bus_aux_v]) / 2;
-          //printf("<<  t2=%d  >>\n", t);
-          bus[bus_aux_v] = t;
-          v = 600/t;
-          //printf("<<  v=%d  >>\n", v);
-          if (bus[bus_lote] > 0)
+          if (!bus[bus_timer3])
           {
-            n = (v * 60) / bus[bus_lote];
-          //  printf("<<  n=%f  >>\n", n);
-            plh = (60-((25+bus[bus_t_esp])*n/600))*v;
-          //  printf("<<  plh(if)=%d  >>\n", plh);
+            bus[bus_timer3] = 9999;
+            plh = 0;
           }
-          else plh = 60 * v;
-          //printf("<<  plh(pre redondeo)=%d  >>\n", plh);
-          plh /= 100;
-          plh *= 100;
-          //printf("<<  plh=%d  >>\n", plh);
-          //fflush(stdout);
-          //system("pause");
-          sprintf(auxstr, "%d", plh);
-          bus[bus_timer3] = 9999;
-          bus[bus_aux_ratio] = bus[bus_total];
-          bus[bus_ratio] = plh;
+          else
+          {
+            // determinar tiempo entre un pliego y otro [mS]
+            t = 9999 - bus[bus_timer3];
+            //if (!bus[bus_aux_v]) bus[bus_aux_v] = t;
+            // evitar errores de interpretacion, asegurando haber medido el tiempo de un solo papel
+            t /= dif;
+            // promediar con el tiempo anterior, para evitar reaultados muy variantes
+            t = (t + bus[bus_aux_v]) / 2;
+            // almacenar el tiempo calculado
+            bus[bus_aux_v] = t;
+            // determinar ratio nominal [pl/min]
+            v = 60000/t;
+            // determinar tiempo real de doblado [min/h]
+            if (bus[bus_lote] >= 0)
+            {
+              // determinar cantidad de lotes completos en una hora
+              n = (v * 60) / bus[bus_lote];
+              //plh = (60-(((80+bus[bus_t_esp])*n)/600))*v;
+              //plh = (80+bus[bus_t_esp]) * n;
+              //plh/=600;
+              //plh = 60 - plh;
+              //plh*=v;
+              plh = (bus[bus_lote]*t)/(1000);
+              plh += ((80 + bus_t_esp) / 10);
+              plh = 3600 / plh;
+              plh = plh * bus[bus_lote];
+            }
+            else plh = 60 * v;
+            //plh /= 100;
+            //plh *= 100;
+            bus[bus_timer3] = 9999;
+          }
+          bus[bus_ratio] = plh/100;
+          bus[bus_ratio] *= 100;
         }
       }
-      else bus[bus_ratio] = 0;
-      
+      bus[bus_aux_ratio] = bus[bus_total];
       sprintf(auxstr, "%d", bus[bus_ratio]);
       print16x2(bus, D16x2_LIN_2|D16x2_ALIN_DER, auxstr);
       break;
@@ -149,7 +157,7 @@ estado_t reposo_3(ARGS_E)
       return rep3;
       break;
   }
-  return retval;
+  return rep3;
 }
 
 /*==========================================================================*/

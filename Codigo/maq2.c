@@ -5,11 +5,13 @@
 estado_t reposo_2(ARGS_E)
 {
   estado_t resp = rep2;
+  if ((bus[bus_sfd] | bus[bus_sfi])) bus[bus_ma] = 0;
   switch (bus[bus_user])
   {
     case 'e': // Boton: Parada de emergencia.
-    case 'm':
       emergencia(bus);
+    case 'm':
+      while (get_msg(bus, 2));
       break;
   }
   if (get_msg(bus, 2) == esp) // maquina 1 en estado 'apilando'
@@ -27,8 +29,8 @@ estado_t esperando_fin_lote(ARGS_E)
   switch (bus[bus_user])
   {
     case 'e': // Boton: Parada de emergencia.
-    case 'm':
       emergencia(bus);
+      return rep2;
       break;
   }
   if (check_timer(bus[bus_timer2]))
@@ -49,8 +51,8 @@ estado_t cinta_acelerada(ARGS_E)
   switch (bus[bus_user])
   {
     case 'e': // Boton: Parada de emergencia.
-    case 'm':
       emergencia(bus);
+      return rep2;
       break;
   }
   if (check_timer(bus[bus_timer2])) // Fin tiempo de eapera
@@ -70,8 +72,8 @@ estado_t moviendo_apilador(ARGS_E)
   switch (bus[bus_user])
   {
     case 'e': // Boton: Parada de emergencia.
-    case 'm':
       emergencia(bus);
+      return rep2;
       break;
   }
   if (((e == mov_d) && bus[bus_sfd]==1)
@@ -79,8 +81,7 @@ estado_t moviendo_apilador(ARGS_E)
   {
     bus[bus_ma] = 0; // Apagar el motor apilador
     set_msg(bus, 1, dob); // Avisar a la maq. de est. 1
-    resp = rep2; // Pasar al siguiente estado
-    print_info("fin de apilado");
+    return rep2; // Pasar al siguiente estado
   }
-  return resp;
+  return e;
 }
