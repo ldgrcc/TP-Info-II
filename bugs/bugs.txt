@@ -39,13 +39,13 @@ sol #1 - Leandro
   Por error habia definido void emergencia(char*) cuando debia ser void emergencia(int*).
   Subí los archivos corregidos.
 
-#4 - Multiple definition of... first defined here
+#3 - Multiple definition of... first defined here
   T: Compilacion en DevC++ Windows 7
   P: No compila el programa
   D: Errores de sintaxis de funciones?
   L: ErroresMultiplataforma.jpg
 
-#5 - [SOL] Makefile.win
+#4 - [SOL] Makefile.win
   T: Error de creacion de archivo en el DevC++
   P: Falla del DevC++
   D: Un error muy comun y muy antiguo
