@@ -1,8 +1,7 @@
 Escribir en este archivo los problemas que vayan apareciendo.
 Usar el siguiente formato:
 
-  #<numero>
-  T: <Titulo>
+  #<numero> - <Titulo>
   P: <Descripcion del problema>
   D: <Diagnostico preliminar>
   L: <Links o nombres de archivos anexos>
@@ -52,3 +51,13 @@ sol #1 - Leandro
   sol #1 - Gabriel - [Funcionó]
      cree una carpeta nueva afuera de la del DevC++ e hice un nuevo proyecto ahi y
      agregue los archivos, al compilar no aparecio más ese error
+
+#5 - [SOL] Problemas con gotoxy()
+A: Leandro
+P: DevC++ @ compiler: "undefined reference to 'gotoxy'"
+D: En windows hay problemas con la funcion gotoxy(), segun el profe Corbalan hay
+   que toquetear la configuracion grafica de windows (descartado, ni en pedo)
+sol #1 - Leandro
+   Cree un vector de cadenas de caracteres. Los gotoxy(x,y) los reemplace por un 
+   sprintf(&vector[y][x], "%s", ...). Para imprimir usecun system("cls") y en un
+   bucle 'for' hice un printf(vector[i]).
