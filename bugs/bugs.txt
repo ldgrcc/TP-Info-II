@@ -51,4 +51,4 @@ sol #1 - Leandro
   D: Un error muy comun y muy antiguo
   sol #1 - Gabriel - [Funcionó]
      cree una carpeta nueva afuera de la del DevC++ e hice un nuevo proyecto ahi y
-     agrege los archivos, al compilar no aparecio más ese error
+     agregue los archivos, al compilar no aparecio más ese error
