@@ -2,6 +2,6 @@
 #TP Informatica II
 
 ##Integrantes
--Castaño Gabriel
--Burgos Pablo
--Grecco Leandro
+*Castaño Gabriel
+*Burgos Pablo
+*Grecco Leandro
