@@ -5,6 +5,7 @@
    funciones de estado.
 */
 #include "def.h"
+
 /*==========================================================================*/
 /* Funciones de temporizacion
   Habria que evaluar que conviene mas entre usar las funciones o usar las
@@ -50,11 +51,13 @@ void emergencia(int *bus) {
 /* Mensajes informativos
 */
 void print_info(char *info) {
+#ifndef SIS_OP_WIN
   int i;
-  gotoxy(0, 21);
+  gotoxy(0, 20);
   for (i=1; i<=50; i++) printf(" ");
-  gotoxy(0, 21);
+  gotoxy(0, 20);
   printf(info);
+#endif
   return;
 }
 
@@ -70,12 +73,18 @@ void print_info(char *info) {
     el contenido del mensaje si es que hay uno.
 */
 int get_msg(int *bus, int para) {
-  int msg=0;
-  for (int i = bus_msg_lo; i <= bus_msg_hi; i++)
+  int msg=0, i;
+  for (i = bus_msg_lo; i <= bus_msg_hi; i++)
     if ((bus[i] & 7) == para)
     {
       msg = bus[i] >> 3;
       bus[i] = 0;
+      if (i<bus_msg_hi) 
+      {
+        for (;i<bus_msg_hi; i++) bus[i]=bus[i+1];
+        bus[bus_msg_hi]=0;
+        return msg;
+      }
     } 
   return msg;
 }
@@ -96,7 +105,8 @@ nota: msg puede tomar valores desde: (2 ^ ((sizeof (int) * 8) - 3)) - 1
 */
 int set_msg(int *bus, int para, int msg)
 {
-  for (int i = bus_msg_lo; i <= bus_msg_hi; i++)
+  int i;
+  for (i = bus_msg_lo; i <= bus_msg_hi; i++)
   if (bus[i] == 0)
   {
     bus[i] = msg << 3;
@@ -104,6 +114,62 @@ int set_msg(int *bus, int para, int msg)
     return bus_msg_lo - i;
   }
   return 0;
+}
+
+/*==========================================================================*/
+/* Escribir en el display 16x2
+  Parametros:
+    linea: el numero de linea del display (1 o 2) donde se quiere escribir
+    flags: ???
+    str: lo que se quiere escribir
+*/
+#define evaluar_cmd if (0);
+#define si_vale(x) else if(!strcmp(str, (x)))
+#define goto_lin1 gotoxy(2, 1)
+#define goto_lin2 gotoxy(2, 2)
+#define flag(x) (strstr(flags, (x)))
+void print16x2(int *bus, int linea, char *str)
+{
+  char frmt[17], brr[] = {"              "};
+  char *destino;
+  // Evaluar borrado de linea
+  switch (linea & D16x2_MASK_BRR)
+  {
+    case D16x2_BRR_1:
+      sprintf(&bus[bus_disp1], brr);
+      break;
+    case D16x2_BRR_ALL:
+      sprintf(&bus[bus_disp1], brr);
+    case D16x2_BRR_2:
+      sprintf(&bus[bus_disp2], brr);
+      break;
+  }
+  // Evaluar linea a imprimir
+  switch (linea & D16x2_MASK_LIN) // evaluar bit 0
+  {
+    case D16x2_LIN_1:
+      destino = (char*)&bus[bus_disp1];
+      break;
+    case D16x2_LIN_2:
+      destino = (char*)&bus[bus_disp2];
+      break;
+    default:
+      return;
+      break;
+  }
+  // Evaluar alineacion
+  switch (linea & D16x2_MASK_ALIN)
+  {
+    case D16x2_ALIN_IZQ:
+      strcpy(frmt, "%-16s");
+      break;
+    case D16x2_ALIN_DER:
+      strcpy(frmt, "%16s");
+      break;
+  }
+  // Imprimir resultado
+  sprintf(destino, frmt, str);
+  return;
 }
 
 /*==========================================================================*/

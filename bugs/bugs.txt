@@ -1,8 +1,7 @@
 Escribir en este archivo los problemas que vayan apareciendo.
 Usar el siguiente formato:
 
-  #<numero>
-  T: <Titulo>
+  #<numero> - <Titulo>
   P: <Descripcion del problema>
   D: <Diagnostico preliminar>
   L: <Links o nombres de archivos anexos>
@@ -38,3 +37,27 @@ sol #1 - Leandro
   Agregué un #include "def.h" en cada archivo.
   Por error habia definido void emergencia(char*) cuando debia ser void emergencia(int*).
   Subí los archivos corregidos.
+
+#3 - Multiple definition of... first defined here
+  T: Compilacion en DevC++ Windows 7
+  P: No compila el programa
+  D: Errores de sintaxis de funciones?
+  L: ErroresMultiplataforma.jpg
+
+#4 - [SOL] Makefile.win
+  T: Error de creacion de archivo en el DevC++
+  P: Falla del DevC++
+  D: Un error muy comun y muy antiguo
+  sol #1 - Gabriel - [Funcionó]
+     cree una carpeta nueva afuera de la del DevC++ e hice un nuevo proyecto ahi y
+     agregue los archivos, al compilar no aparecio más ese error
+
+#5 - [SOL] Problemas con gotoxy()
+A: Leandro
+P: DevC++ @ compiler: "undefined reference to 'gotoxy'"
+D: En windows hay problemas con la funcion gotoxy(), segun el profe Corbalan hay
+   que toquetear la configuracion grafica de windows (descartado, ni en pedo)
+sol #1 - Leandro
+   Cree un vector de cadenas de caracteres. Los gotoxy(x,y) los reemplace por un 
+   sprintf(&vector[y][x], "%s", ...). Para imprimir usecun system("cls") y en un
+   bucle 'for' hice un printf(vector[i]).

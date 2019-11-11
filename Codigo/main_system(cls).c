@@ -2,20 +2,18 @@
 
 #include "def.h"
 
-#ifdef no_compila_varios_punto_c
-  #include "general.c"
-  #include "maq1.c"
-  #include "maq2.c"
-  #include "maq3.c"
-#endif
+#ifdef SIS_OP_WIN
 
 int main()
 { 
+  int i;
+  char terminal[23][51];
+  for (i=0; i<23; i++) strcpy(terminal[i], "");
   int estado[CANT_MAQ]; // Variables de estado, una para cada maquina.
-  char lin1[16], lin2[16]; // Las 2 lineas del display de 16x2.	
-  int bus[BUS_ELEMENTOS]; // Para leer el teclado y simular la maquina.
-	                         // bus[bus_user] es la ultuma tecla presionada.
-	 // Para hacer depuracion usamos un archivo de salida
+  char *display16x2[2]; // Las 2 lineas del display de 16x2.	
+  int bus[BUS_TAMANIO]; // Para leer el teclado y simular la maquina.
+	                        // bus[bus_user] es la ultuma tecla presionada.
+
 	 
   // Vector de cadenas de caractetes auxiliar para la simulacion:
   char desc[][20] = {"motor principal", "motor cinta", "motor apilador",
@@ -32,26 +30,47 @@ int main()
   DEFINIR_CRONOMETRO(sim); // Este temporizador lleva la cuenta del tiempo transcurrido desde el inicio de la simulacion
   DEFINIR_CRONOMETRO(pausa);
   DEFINIR_CRONOMETRO(sfc);
+  DEFINIR_CRONOMETRO(pap);
+  DEFINIR_CRONOMETRO(t3);
   // Iniciar los cronometros
   REINICIAR_CRONOMETRO(imp);
   REINICIAR_CRONOMETRO(maq);
   REINICIAR_CRONOMETRO(sim);
+  REINICIAR_CRONOMETRO(t3);
 	 
-/*  INICIO [init()]- se supone que todo esto va en una funcion */
-  for (int i=0; i<BUS_ELEMENTOS; i++) bus[i] = 0;
-  for (int i=0; i < CANT_MAQ; i++) estado[i] = 0;
-  strcpy(lin1, "Bienvenido");
-  lin2[0] = '\0';
-  bus[bus_lote] = 8;
+/*  INICIO 'init()' - se supone que todo esto va en una funcion */
+  for (i=0; i<BUS_TAMANIO; i++) bus[i] = 0;
+  for (i=0; i < CANT_MAQ; i++) estado[i] = 0;
+  display16x2[0] = (char*)&bus[bus_disp1];
+  display16x2[1] = (char*)&bus[bus_disp2];
+  bus[bus_lote] = 50;
   bus[bus_sfd] = 1;
-  
+  bus[bus_t_esp] = 35;
+  bus[bus_vel] = 10;
+  bus[bus_UI] = UI_reposo_cant;
+  print16x2(bus, D16x2_LIN_1, "Parcial");
+    // Imprimir las partes de la simulacion que son constantes
+  // seccion 1: display 16x2
+  sprintf(terminal[1], "+------------------+");
+  sprintf(terminal[3], "+------------------+");
+
+  // seccion 2: botones
+  sprintf(terminal[5], "=== Botones ======================================");
+  sprintf(terminal[6], "m: motor principal         e: parada de emergencia");
+  sprintf(terminal[7], "p: produccion");
+  sprintf(terminal[8], "a: izquierda   w: arriba   o: ok");
+  sprintf(terminal[9], "d: derecha     s: abajo    f: funciones");
+         
+  // seccion 3: estado de la maquina
+  sprintf(terminal[11], "=== Estado de la maquina =========================");
+  sprintf(terminal[12], "-");
 /* Aca deberia ser while (1) pero le pongo una condicion de salida para que no se 
     cuelgue el programa y podamos hacer depuracion.
        z: Finaliza la simulacion.
        x: Pausa la simulacion y entra en modo paso a paso.
        c: Reanuda la simulacion.
 */
-  while (bus[bus_user] != 'z')
+  while (bus[bus_user] != 'z') /* while (1) */
   {
     // Maquina de estado 1
     switch (estado[0])
@@ -67,9 +86,6 @@ int main()
         break;
       case api:
         estado[0] = apilando(estado[0], bus);
-        break;
-      case con: 
-        estado[0] = configurando(estado[0], bus);
         break;
     }
 		
@@ -96,101 +112,98 @@ int main()
       case rep3:
         estado[2] = reposo_3(estado[2], bus);
         break;
-      case lote0:
-      case lote1:
-      case lote2:
-      case lote3:
-      case lote4:
+      case vel:
+        estado[2] = mod_velocidad(estado[2], bus);
+        break;
+      case loteo:
         estado[2] = mod_lote(estado[2], bus);
         break;
-      case t0:
-      case t1:
-      case t2:
+      case t_esp:
         estado[2] = mod_tiempo(estado[2], bus);
         break;
     }
 		
     /* Imprimir la simulacion
          En cada iteracion borrar la pantalla y volver a imprimir.
-         lo importante es el display de 16x2, lo demas
-         es para depuracion.
+         lo importante es el display de 16x2, lo demas es para depuracion.
     */
-
     if (CRONOMETRO(imp) > T_IMP || pausado) // para no saturar el terminal, imprimir cada cierto tiempo de espera
     {
       REINICIAR_CRONOMETRO(imp);
-      system(BORRAR_PANTALLA);
-
       // seccion 1: display 16x2
-      printf("+------------------+\n");
-      printf("| %-16s |\n| %-16s |\n", lin1, lin2);
-      printf("+------------------+\n\n");
+      //gotoxy(0, 2);
+      sprintf(terminal[2], "| %16s |\n| %16s |", display16x2[0], display16x2[1]);
 
-      // seccion 2: botones
-      printf("=== Botones ================================\n");
-      printf("p: produccion      e: parada de emergencia\n"
-             "m: motor           f: funciones\n"
-             "o: ok              w: arriba\n"
-             "a: izquierda       s: abajo\n"
-             "d: derecha\n");
-
-      // seccion 3: estado de la maquina
-      printf("\n=== Estado de la maquina ========================\n-");
-      for (int i=0; i < CANT_MAQ; i++) printf("  estado %d: %d  -", i+1, estado[i]);
-      for (int i=1; i<=bus_sfd; i+=2)
+      // seccion 3: Estado de la maquina
+      //gotoxy(2, 13);
+      for (i=0; i < CANT_MAQ; i++) sprintf(&terminal[12][1+(i*16)], "  estado %2d:%2d  -", i+1, estado[i]);
+      for (i=1; i<=bus_sfd; i+=2)
       {
-        printf("\n%18s: %3d", desc[i-1], bus[i]);
-        if (i+1<=bus_sfd) printf(" | %-3d :%-18s", bus[i+1], desc[i]);
+        sprintf(terminal[13+(i/2)], "%17s: %4d", desc[i-1], bus[i]);
+        if (i+1<=bus_sfd) sprintf(&terminal[13+(i/2)][23], " | %-4d :%-17s", bus[i+1], desc[i]);
       }
-      printf("\n\n");
-      if (pausado) printf("  Simulacion pausada");
-      else printf("Tiempo de simulacion");
+      
+      //gotoxy(0, 21);
+      if (pausado) sprintf(terminal[20], "  Simulacion pausada");
+      else sprintf(terminal[20], "Tiempo de simulacion");
       float seg = CRONOMETRO(sim) - ((pausado)? CRONOMETRO(pausa) : 0);
-      printf(": %d:%05.2f   > Teclado > ", (int)seg/60, (((int)seg) % 60)+(seg - floor(seg))); 
-      if (bus[bus_user]) putchar(bus[bus_user]);
-      /* La impresion era defectuosa, habia un conflicto entre system("clear")
-         y los printf(), asi que agregue la siguiente linea para asegurar que la
-         impresion sea correcta. */
+      sprintf(&terminal[20][19], ": %d:%04.1f  ", (int)seg/60, (((int)seg) % 60)+(seg - floor(seg))); 
+      
+      /* La impresion era defectuosa, habia un conflicto entre system("clear") y los printf(),
+      asi que agregue la siguiente linea para asegurar que la impresion sea correcta. */
+      system(BORRAR_PANTALLA);
+      for (i=1; i<21; i++) printf("%-48s\n", terminal[i]);
       fflush(stdout);
     } // Fin impresion de datos
 
-/*   Simular maquina en funcionamento   */
+    /* Simular maquina en funcionamento */
+
     // Simular papeles pasando por debajo del sensor contador
-    if(bus[bus_mp] && bus[bus_va]) bus[bus_sc] = (CRONOMETRO(sim) - floor(CRONOMETRO(sim)) > 0.3)? 1 : 0; 
-    else bus[bus_sc] = 0;
-  
-    // Actualizar los temporizadores
-    if (CRONOMETRO(maq) >= 0.1) // El incremento es en decimas de segundo
+    if(bus[bus_mp] && bus[bus_va])
     {
-      for (int i=bus_timer1; i<=bus_timer3; i++) if (bus[i]) bus[i]--;
+      if (CRONOMETRO(pap) > 1.0 / bus[bus_vel])
+      {
+        REINICIAR_CRONOMETRO(pap);
+        bus[bus_sc] = !bus[bus_sc];
+      }
+    } 
+    else bus[bus_sc] = 0;
+    
+    // Actualizar los temporizadores
+    if (CRONOMETRO(maq) >= 0.1) // El decremento en general es en decimas de segundo
+    {
+      //for (i=bus_timer1; i<=bus_timer2; i++) if (bus[i]) bus[i]--;
+      if (bus[bus_timer1]) bus[bus_timer1]--;
+      if (bus[bus_timer2]) bus[bus_timer2]--;
       REINICIAR_CRONOMETRO(maq);
     }
+    if (CRONOMETRO(t3) >= 0.001) // El decremento del timer3 es en milecimas de segundo
+    {
+      if (bus[bus_timer3]) bus[bus_timer3]--;
+      REINICIAR_CRONOMETRO(t3);
+    }
 
-    // Sensores de fin de carrera
+    // Actualizar sensores de fin de carrera
     if (bus[bus_ma]!=0) // si (motor apilador ON)
     {
-     if ((bus[bus_sfi]==1) || (bus[bus_sfd]==1))
+     if ((bus[bus_sfi]==1) || (bus[bus_sfd]==1)) // si (algun sensor ON)
      {
-       //if (CRONOMETRO(sfc) < 3.5)
-       {
-         REINICIAR_CRONOMETRO(sfc);
-         if (bus[bus_ma]>0) bus[bus_sfi] = 0;
-         if (bus[bus_ma]<0) bus[bus_sfd] = 0;
-       }
+       REINICIAR_CRONOMETRO(sfc);
+       if (bus[bus_ma]>0) bus[bus_sfi] = 0;
+       if (bus[bus_ma]<0) bus[bus_sfd] = 0;
      }
-     else
+     else // si (ambos sensores OFF)
      {
-       if (CRONOMETRO(sfc) > 4.5)
+       if (CRONOMETRO(sfc) > 5.5)
        {
          if (bus[bus_ma] < 0) bus[bus_sfi] = 1;
          if (bus[bus_ma] > 0) bus[bus_sfd] = 1;
        }
      }
     }
-    else if (!(bus[bus_sfi] | bus[bus_sfd])) // si (motor apilador OFF)
+    else if (!(bus[bus_sfi] | bus[bus_sfd])) // si (motor apilador OFF) y (ambos sensores OFF)
     {
-      printf("\n\n>>> Error: Sensores fin de carrera @ %s: %d", __FILE__, __LINE__);
-      exit(0);
+      REINICIAR_CRONOMETRO(sfc);
     }
     
 /*   Leer el teclado   */
@@ -220,3 +233,13 @@ int main()
   printf("\n\nSimulacion finalizada.");
   return 0;
 }  // Fin del main()
+
+
+#ifdef no_compila_varios_punto_c
+  #include "general.c"
+  #include "maq1.c"
+  #include "maq2.c"
+  #include "maq3.c"
+#endif
+
+#endif
