@@ -36,18 +36,15 @@ int main()
   REINICIAR_CRONOMETRO(sim);
   REINICIAR_CRONOMETRO(t3);
 	 
-/*  INICIO 'init()' - se supone que todo esto va en una funcion */
-  for (i=0; i<BUS_TAMANIO; i++) bus[i] = 0;
-  for (i=0; i < CANT_MAQ; i++) estado[i] = 0;
-  display16x2[0] = (char*)&bus[bus_disp1];
+	 display16x2[0] = (char*)&bus[bus_disp1];
   display16x2[1] = (char*)&bus[bus_disp2];
-  bus[bus_lote] = 50;
-  bus[bus_sfd] = 1;
-  bus[bus_t_esp] = 35;
-  bus[bus_vel] = 10;
-  bus[bus_UI] = UI_reposo_cant;
+  
+/*  INICIO 'init()' */
+  init(bus, estado);
+  
+  // Imprimir las partes de la simulacion que son constantes
   print16x2(bus, D16x2_LIN_1, "Parcial");
-    // Imprimir las partes de la simulacion que son constantes
+  
   // seccion 1: display 16x2
   printf("+------------------+\n\n\n");
   printf("+------------------+\n\n");

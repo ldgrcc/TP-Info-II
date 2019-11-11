@@ -62,6 +62,21 @@ void print_info(char *info) {
 }
 
 /*==========================================================================*/
+
+void init(int *bus, int* estado)
+{
+  int i;
+  for (i=0; i<BUS_TAMANIO; i++) bus[i] = 0;
+  for (i=0; i < CANT_MAQ; i++) estado[i] = 0;
+  bus[bus_lote] = 50;
+  bus[bus_sfd] = 1;
+  bus[bus_t_esp] = 35;
+  bus[bus_vel] = 10;
+  bus[bus_UI] = UI_reposo_cant;
+ return;
+}
+
+/*==========================================================================*/
 /* Para manejar los mensajes entre maquinas */
 
 /* Busca en la lista si hay algun mensaje para la maq. de est.

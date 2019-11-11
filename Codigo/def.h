@@ -51,7 +51,7 @@ ningun boton.
 
 // General (para los estados)
 enum estado_maq1 {rep1, ini, dob, api, con};
-enum estado_maq2 {rep2, esp, cin, mov_d=4, mov_i=8};
+enum estado_maq2 {rep2, esp, cin, mov_d, mov_i};
 enum estado_maq3 {rep3, loteo, t_esp, vel};
 
 /* Para simular la maquina usamos el vector 'bus', que cada funcion de estado recibira como parametro
@@ -173,6 +173,7 @@ estado_t mod_lote(ARGS_E) DEFINIDA_SI // lote0
 estado_t mod_tiempo(ARGS_E) DEFINIDA_SI // t0
 
 // Funciones de uso general
+void init(int *bus, int* estado);
 void print16x2(int *bus, int linea, char *str);
 void emergencia(int *bus);
 void print_info(char* info);
